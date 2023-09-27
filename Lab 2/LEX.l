@@ -1,28 +1,27 @@
-// Write a LEX program to find if a given number is EVEN or ODD
+/*Lex program to take check whether
+the given number is even or odd */
 
 %{
-#include <stdio.h>
+#include<stdio.h>
+int i;
 %}
 
 %%
 
-[0-9]+ {
-    int num = atoi(yytext); // Convert the matched text to an integer
-    if (num % 2 == 0) {
-        printf("%d is EVEN\n", num);
-    } else {
-        printf("%d is ODD\n", num);
-    }
-}
-
-\n { /* Do nothing for newline characters */ }
-
-. { /* Handle any other characters as an error */ }
-
+[0-9]+	 {i=atoi(yytext);
+		if(i%2==0)
+			printf("Even");
+		else
+		printf("Odd");}
 %%
 
-int main() {
-    yylex();
-    return 0;
+int yywrap(){}
+
+/* Driver code */
+int main()
+{
+
+	yylex();
+	return 0;
 }
 
