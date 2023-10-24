@@ -1,5 +1,3 @@
-import ast
-
 # Define your custom AST node structure
 class Node:
     def __init__(self, node_type, children=None, value=None):
@@ -22,23 +20,26 @@ def parse_to_ast(source_code):
 
     return ast_root
 
-# Module 2: Function to calculate AST similarity
 # Module 2: Function to calculate custom AST similarity
 def calculate_similarity(ast1, ast2):
     # Your custom similarity calculation logic
-    # This could involve tree traversal and comparing node types and values
-    # For simplicity, we'll just check if the ASTs are identical
-    def are_ast_trees_identical(node1, node2):
-        if node1.node_type != node2.node_type:
-            return False
-        if len(node1.children) != len(node2.children):
-            return False
-        for child1, child2 in zip(node1.children, node2.children):
-            if not are_ast_trees_identical(child1, child2):
-                return False
-        return True
+    # This could involve tree traversal and comparing node structures
 
-    return are_ast_trees_identical(ast1, ast2)
+    def count_identical_nodes(node1, node2):
+        if node1.node_type != node2.node_type:
+            return 0
+        count = 1
+        for child1, child2 in zip(node1.children, node2.children):
+            count += count_identical_nodes(child1, child2)
+        return count
+
+    total_nodes = count_identical_nodes(ast1, ast2)
+    total_nodes1 = len(ast1.children)
+    total_nodes2 = len(ast2.children)
+    
+    similarity = (2.0 * total_nodes) / (total_nodes1 + total_nodes2)
+
+    return similarity
 
 # Module 3: Function to read source code from files
 def read_source_code_from_files(model_file, student_file):
@@ -58,7 +59,10 @@ def main():
     student_ast = parse_to_ast(student_source)
 
     similarity = calculate_similarity(model_ast, student_ast)
-    print(f"Similarity between the model answer and student's submission: {similarity}")
+    similarity_percentage = similarity * 100  # Convert to percentage
+    if similarity_percentage > 100:
+        similarity_percentage = 100.0
+    print(f"Percentage of similarity between the model answer and student's submission: {similarity_percentage:.2f}%")
 
 if __name__ == '__main__':
     main()
