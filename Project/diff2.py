@@ -72,8 +72,11 @@ def calculate_similarity(ast1, ast2):
         count = 1
 
         # Recursively count identical nodes in the children
+        count_children = 0
         for child1, child2 in zip(node1.children, node2.children):
-            count += count_identical_nodes(child1, child2)
+            count_children += count_identical_nodes(child1, child2)
+        
+        count += count_children
 
         return count
 
@@ -84,25 +87,44 @@ def calculate_similarity(ast1, ast2):
     total_nodes1 = len(ast1.children)
     total_nodes2 = len(ast2.children)
 
-    # Calculate similarity as a ratio of identical nodes to total nodes
-    similarity = (identical_nodes) / (total_nodes1 + total_nodes2)
-
+    # Calculate similarity as a ratio of identical nodes to the total nodes
+    similarity = (2.0 * identical_nodes) / (total_nodes1 + total_nodes2)
+    print(similarity)
     return similarity
+
+# ...
 
 # Function to read source code from files
 def read_source_code_from_files(model_file, student_file):
-    with open(model_file, 'r') as model:
-        model_source = model.read()  # Read the model answer from the file
-    with open(student_file, 'r') as student:
-        student_source = student.read()  # Read the student's submission from the file
-    return model_source, student_source
+    try:
+        with open(model_file, 'r') as model:
+            model_source = model.read()  # Read the model answer from the file
+        with open(student_file, 'r') as student:
+            student_source = student.read()  # Read the student's submission from the file
+        return model_source, student_source
+    except Exception as e:
+        print(f"Error reading files: {e}")
+        exit(1)
+
+import nbformat
+
+# Function to extract code from Jupyter Notebook
+def extract_code_from_notebook(notebook):
+    code = []
+    nb = nbformat.read(notebook, as_version=4)
+    for cell in nb.cells:
+        if cell.cell_type == 'code':
+            code.append(cell.source)
+    return '\n'.join(code)
 
 # Main function
 def main():
-    model_file = input("Enter the path to the model answer file: ")
-    student_file = input("Enter the path to the student's submission file: ")
+    model_file = input("Enter the path to the model answer Jupyter Notebook file: ")
+    student_file = input("Enter the path to the student's submission Jupyter Notebook file: ")
 
-    model_source, student_source = read_source_code_from_files(model_file, student_file)
+    model_source = extract_code_from_notebook(model_file)
+    student_source = extract_code_from_notebook(student_file)
+
     model_ast = parse_to_ast(model_source)
     student_ast = parse_to_ast(student_source)
 
