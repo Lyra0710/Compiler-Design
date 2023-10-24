@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "dff.C": "cpp",
-        "diff.C": "cpp"
+        "diff.C": "cpp",
+        "diff2.C": "cpp"
     }
 }
