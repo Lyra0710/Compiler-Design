@@ -173,8 +173,8 @@ def main():
     # Take inputs
     # model_file = input("Enter the path to the model answer file: ")
     # student_file = input("Enter the path to the student's submission file: ")
-    model_file = input("Enter the path to the model answer file: ")
-    student_file =  input("Enter the path to the student's submission file: ")
+    model_file = input("Enter the path to file 1: ")
+    student_file =  input("Enter the path to the student's submission file 2: ")
 
 
     # Read source code from files
